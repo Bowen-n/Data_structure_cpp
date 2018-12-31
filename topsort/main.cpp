@@ -23,11 +23,11 @@ int main() {
 	int credit_hour;
 	int course;
 
-	cout << "Please input semester, credit hour, \
-		number of courses:" << endl;
+	cout << "Please input semester, credit hour,";
+	cout << "number of courses:" << endl;
 	cin >> semester >> credit_hour >> course;
-	cout << "Please input " << course << " courses' ID\
-	 Credits, Prerequisite course(if none, input @):" << endl;
+	cout << "Please input " << course << " courses' ID";
+	cout << "Credits, Prerequisite course(if none, input @):" << endl;
 
 	string *c_id = new string[course];
 	int *c_cred = new int[course];
@@ -54,19 +54,40 @@ int main() {
 			c_map.insert(tmp[j], c_id[i], 0);
 	}
 
-	cout << endl;
+	system("cls");
 	// c_map.show_graph();
 
 	cout << "Please input the file's name(omit the file suffix):" << endl;
-	string file_path; cin >> file_path;
-	// c_map.build_plan_v1(file_path);
-	c_map.build_plan_v2(course, file_path);
-	
 
-	/*
-	TODO:
-	implement two methods
-	*/
+	string file_path; cin >> file_path;
+
+	cout << endl;
+	// input method
+	cout << "Please input the 1 or 2:" << endl;
+	cout << "1. Courses are arranged in all semesters." << endl;
+	cout << "2. Courses are mainly in the first few semesters." << endl;
+	int method; cin >> method;
+	while (method != 1 && method != 2) {
+		cout << "Error, please try again!." << endl;
+		cin >> method;
+	}
+
+	switch (method) {
+	case 1: {
+		bool flag = true;
+		c_map.build_plan_v1(file_path, flag);
+		if (flag) // success
+			c_map.build_plan_v2(course, file_path);
+		break;
+	}
+	case 2: {
+		bool tmp = true;
+		c_map.build_plan_v1(file_path, tmp);
+		break;
+	}
+	default:break;
+	}
+
 
 	delete[]c_pre;
 	delete[]c_cred;

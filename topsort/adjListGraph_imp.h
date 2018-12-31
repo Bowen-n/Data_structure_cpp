@@ -116,7 +116,7 @@ void adjListGraph<TypeOfVer, TypeOfEdge>
 
 template<class TypeOfVer, class TypeOfEdge>
 void adjListGraph<TypeOfVer, TypeOfEdge>
-::build_plan_v1(const string file_name)const {
+::build_plan_v1(const string file_name, bool &flag)const {
 
 	string path = file_name + ".txt";
 	ofstream file(path);
@@ -187,6 +187,7 @@ void adjListGraph<TypeOfVer, TypeOfEdge>
 		ofstream file(path, ios::trunc); // clear the file
 		file << "Sorry! There is no solution for your education plan." << endl;
 		file.close();
+		flag = false;
 		return;
 	}
 
@@ -219,6 +220,10 @@ void adjListGraph<TypeOfVer, TypeOfEdge>
 
 	// loop for semester
 	int c_every_s = total_c / this->t_sems;
+	bool flag = false;
+	if (c_every_s * this->t_sems == total_c)
+		flag = true;
+
 	for (int i = 1; i <= this->t_sems; i++) {
 
 		int total_credit_ = 0;
@@ -236,13 +241,15 @@ void adjListGraph<TypeOfVer, TypeOfEdge>
 			total_credit_ += verList[course].credit;
 
 			// can attend this course
-			if (total_credit_ < this->cre_max) {
+			if (total_credit_ <= this->cre_max) {
 				// to implement uniform
-				if (c_this_s < c_every_s) {
+				if ((flag==true&&c_this_s < c_every_s)
+					||(flag==false&&c_this_s<=c_every_s)) {
 					q.deQueue();
 					file << setw(4) << i << setw(11);
 					file << verList[course].ver << setw(10);
 					file << verList[course].credit << endl;
+
 					// update in-degree
 					for (p = verList[course].head; p != NULL; p = p->next)
 						--in_degree[p->end];
@@ -260,28 +267,14 @@ void adjListGraph<TypeOfVer, TypeOfEdge>
 
 		}// while
 
-		if(!if_no_class)
+		if (!if_no_class)
 			file << "--------------------------" << endl;
+
 
 
 	}// for
 
-	bool sucess = true;
-	for (int i = 0; i < Vers; i++)
-		if (in_degree[i] != -1)
-			sucess = false;
-
-	// failed
-	if (sucess == false) {
-		cout << "Sorry! There is no solution for your education plan." << endl;
-		file.close();
-		ofstream file(path, ios::trunc); // clear the file
-		file << "Sorry! There is no solution for your education plan." << endl;
-		file.close();
-		return;
-	}
-
-	cout << "Your education plan has been written into ./" << path << endl;
+	// cout << "Your education plan has been written into ./" << path << endl;
 
 	delete[]in_degree;
 	file.close();

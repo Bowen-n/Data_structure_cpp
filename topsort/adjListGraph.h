@@ -48,7 +48,7 @@ public:
 	void show_graph()const;
 	~adjListGraph();
 
-	void build_plan_v1(const string)const;
+	void build_plan_v1(const string, bool &flag)const;
 	void build_plan_v2(const int, const string)const;
 };
 
